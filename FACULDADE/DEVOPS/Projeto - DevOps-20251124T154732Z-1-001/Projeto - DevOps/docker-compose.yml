@@ -1,0 +1,99 @@
+services:
+  # Serviço do Front-end
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      # Mapeia o código local para o contêiner para live-reloading
+      - ./frontend:/app
+      # Impede que o node_modules local sobrescreva o do contêiner (importante!)
+      - /app/node_modules
+    environment:
+      # Garante que o hot-reload do React funcione bem em ambientes Docker
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - backend
+    networks:
+      - app-net
+
+  # Serviço do Back-end
+  backend:
+    build: ./backend
+    ports:
+      - "3001:3001"
+    restart: on-failure
+    volumes:
+      # Mapeia o código local para o contêiner para live-reloading
+      - ./backend:/usr/src/app
+      # Impede que o node_modules local sobrescreva o do contêiner
+      - /usr/src/app/node_modules
+    depends_on:
+      - mongodb
+    networks:
+      - app-net
+
+  # Serviço do Banco de Dados
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      # Garante que os dados do MongoDB persistam mesmo se o contêiner parar
+      - mongo-data:/data/db
+    networks:
+      - app-net
+
+  # --- Monitoramento com Zabbix ---
+
+  zabbix-server:
+    image: zabbix/zabbix-server-mysql:latest
+    ports:
+      - "10051:10051"
+    environment:
+      - DB_SERVER_HOST=zabbix-db
+      - MYSQL_USER=zabbix
+      - MYSQL_PASSWORD=zabbix
+      - MYSQL_DATABASE=zabbix
+    depends_on:
+      - zabbix-db
+    networks:
+      - app-net
+
+  zabbix-web:
+    image: zabbix/zabbix-web-nginx-mysql:latest
+    ports:
+      - "8080:80" # Acessível em http://localhost:8080
+    environment:
+      - ZBX_SERVER_HOST=zabbix-server
+      - DB_SERVER_HOST=zabbix-db
+      - MYSQL_USER=zabbix
+      - MYSQL_PASSWORD=zabbix
+      - MYSQL_DATABASE=zabbix
+    depends_on:
+      - zabbix-server
+    networks:
+      - app-net
+
+  zabbix-db:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      - MYSQL_ROOT_PASSWORD=zabbix_root_pwd
+      - MYSQL_USER=zabbix
+      - MYSQL_PASSWORD=zabbix
+      - MYSQL_DATABASE=zabbix
+    volumes:
+      - zabbix-db-data:/var/lib/mysql
+    networks:
+      - app-net
+
+# Definição dos Volumes (para persistência de dados)
+volumes:
+  mongo-data:
+  zabbix-db-data:
+
+# Definição da Rede (para que os contêineres se comuniquem)
+networks:
+  app-net:
+    driver: bridge

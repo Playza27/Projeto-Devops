@@ -1,0 +1,6 @@
+# Ignora a pasta de dependências, que será criada dentro do contêiner
+node_modules
+
+# Arquivos de log e ambiente
+npm-debug.log
+.env

@@ -1,0 +1,11 @@
+# Ignora a pasta de dependências
+node_modules
+
+# Ignora a pasta de build gerada pelo React
+build
+
+# Ignora a pasta interna do Git para resolver o erro
+.git
+
+# Ignora arquivos de ambiente
+.env
