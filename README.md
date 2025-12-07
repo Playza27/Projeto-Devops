@@ -1,4 +1,4 @@
-Projeto DevOps Integrado: Aplicação + Monitoramento
+ Projeto DevOps Integrado: Aplicação + Monitoramento
 Este projeto demonstra a implementação de uma aplicação web Full Stack (Front-end e Back-end) containerizada com Docker Compose, integrada com persistência de dados em MariaDB (para o Zabbix) e monitoramento de saúde via Zabbix.
 Requisitos Atendidos
 O projeto atende aos requisitos de desenvolvimento da aplicação e monitoramento/testes:
@@ -17,7 +17,7 @@ Serviços e Funções:
  * zabbix-server: Zabbix Server na porta 10051. É o Motor de coleta e processamento de dados.
  * zabbix-web: Zabbix Web Interface na porta 8000. É a Interface para visualização do monitoramento.
 Guia de Instalação e Execução
-Para subir todo o ambiente (Aplicação e Monitoramento), execute o comando na pasta raiz do projeto (projeto-devops/).
+Para subir todo o ambiente (Aplicação e Monitoramento), execute o comando na pasta raiz do projeto.
 1. Reconstrução e Subida do Ambiente
 O parâmetro --build é crucial para compilar as imagens com as correções de CORS e Anti-Cache do Nginx.
 docker compose up --build -d
@@ -32,8 +32,9 @@ Para acessar os componentes do projeto em seu navegador:
  * API Back-end: http://localhost:3000/api/mensagens
  * Painel Zabbix: http://localhost:8000 (Credenciais: User: Admin / Pass: zabbix)
 Monitoramento e Testes
-Testes Funcionais (Postman)
-As rotas foram testadas e validadas: GET e POST funcionam corretamente com transferência de dados JSON.
+Documentação e Testes (Postman)
+A documentação completa da API, incluindo a Collection com testes automáticos validados (rotas GET e POST funcionando corretamente com transferência de dados JSON), pode ser acessada pelo link abaixo:
+ * Coleção e Documentação Postman: https://reinaldorneto941-2968480.postman.co/workspace/Reinaldo-Neto's-Workspace~487bd3e1-8064-4cba-82f7-c52bda70c4bf/collection/50627132-8cad119a-6f22-41dd-92e9-daa160af6d64?action=share&creator=50627132
 Monitoramento de Saúde (Zabbix)
 O Zabbix Server está configurado para monitorar a disponibilidade da aplicação via HTTP (Web Scenarios/HTTP Items):
  * Verificações:
